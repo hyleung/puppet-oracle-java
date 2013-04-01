@@ -1,14 +1,5 @@
 class java::install {
-        exec {
-    "/usr/bin/apt-get -y update":
-      alias => "aptUpdate",
-      timeout => 3600;
-  }
-    package {
-        "alien":
-            ensure => installed,
-            require => Exec["aptUpdate"];
-    }
+    
     file {
         ["/root","/root/files"]:
             ensure => directory;
