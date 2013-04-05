@@ -1,12 +1,24 @@
-class java::install {
-    
+class java::install(
+        $installer = "puppet:///modules/java/jdk-6u41-linux-x64-rpm.bin"
+    ) {
+    @exec {
+    "/usr/bin/apt-get -y update":
+      alias => "aptUpdate",
+      timeout => 3600;
+    }
+    Exec <| title == "/usr/bin/apt-get -y update"|>
+    @package {
+        alien:
+            ensure => installed
+    }
+    Package<| title == alien |> <- Exec["/usr/bin/apt-get -y update"]    
     file {
         ["/root","/root/files"]:
             ensure => directory;
     }
     file {
         "/root/files/jdk-6u41-linux-x64-rpm.bin":
-            source => "puppet:///modules/java/jdk-6u41-linux-x64-rpm.bin",
+            source => $installer,
             mode => 0755;
     }
     exec {
